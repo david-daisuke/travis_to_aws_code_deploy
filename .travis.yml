@@ -1,27 +1,27 @@
-language: generic # languageはジェネリックにします。
+language: generic
 services:
-- httpd           #単純にwebpageを表示するだけなので、service はhttpdとします
-deploy:　　　　　　#　ここ以下が実装するないようとなります。
+- httpd
+deploy:
 - provider: s3
-  access_key_id: $AWS_ACCESS_KEY              #AWSで作成したアクセスキーでTravisに設定します。
-  secret_access_key: $AWS_SECRET_KEY          #AWSで作成したシークレットキーでTravisに設定します
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
   local_dir: dpl_cd_upload
   skip_cleanup: true
   on: &2
-    repo: david-daisuke/travis_to_aws_code_deploy    #ご自身のgit ユーザネームとレポジトリ名に変更してください
+    repo: david-daisuke/travis_to_aws_code_deploy
   bucket: demotravis-s3
-  region: us-east-2      #バケットがあるリージョンです、間違えないようにしましょう
+  region: us-east-2
 - provider: codedeploy
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
-  bucket: demotravis-s3                    #バケット名
+  bucket: demotravis-s3
   key: latest.zip
   bundle_type: zip
   application: MyExampleCodeDeployToTravis
   deployment_group: TravisDeployCodeDemoDeploymentGroup
   region: us-east-2
   on: *2
-script: # デプロイ完了したら、行う作業を指定します
+script:
   - zip -r latest *
   - mkdir -p dpl_cd_upload
   - mv latest.zip dpl_cd_upload/latest.zip
